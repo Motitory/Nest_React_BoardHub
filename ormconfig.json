@@ -1,0 +1,16 @@
+{
+    "type": "postgres",
+    "host": "localhost",
+    "port": 5432,
+    "username": "moti",
+    "password": "moti",
+    "database": "board_hub",
+    "entities": ["dist/**/*.entity{.ts,.js}"],
+    "synchronize": true,
+    "migrationsTableName": "migration",
+    "migrations": ["dist/migration/*.js"],
+    "cli": {
+      "migrationsDir": "src/migration"
+    }
+}
+  

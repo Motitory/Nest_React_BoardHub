@@ -1,0 +1,57 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:14.10
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+      TZ: ${TZ}
+    ports:
+      - '5432:5432'
+    networks:
+      - docker_server
+    volumes:
+      - /mnt/c/Users/User/Desktop/2023_2학기_웹프로그래밍3_기말과제_2001348_김태헌/backup.sql:/docker-entrypoint-initdb.d/backup.sql
+      - postgres_data:/var/lib/postgresql/data
+      
+  nest:
+    image: node:lts
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USERNAME: ${DB_USER}
+      DB_PASSWORD: ${DB_PASS}
+      DB_DATABASE: ${DB_NAME}
+      JWT_SECRET: YOUR_JWT_SECRET_KEY
+    ports:
+      - '8000:8000'
+    volumes:
+      - ./board-hub_back:/app
+    working_dir: /app
+    command: sh -c "npm install && npm run start:dev"
+    networks:
+      - docker_server
+    depends_on:
+      - db
+
+  react:
+    build: node:lts
+    environment:
+      REACT_APP_BACKEND_URL: http://localhost:8000
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./board-hub_front:/app
+    working_dir: /app
+    command: sh -c "npm install && npm start"
+    networks:
+      - docker_server
+    depends_on:
+      - nest
+
+networks:
+  docker_server:
+
+volumes:
+  postgres_data:
