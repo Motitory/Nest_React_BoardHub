@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { registerUser } from "../api";
 import { AxiosError } from "axios";
+import { useNavigate } from "react-router-dom";
 
 const SignUpForm = () => {
   const [email, setEmail] = useState("");
@@ -9,6 +10,7 @@ const SignUpForm = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [passwordMatchError, setPasswordMatchError] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -21,8 +23,7 @@ const SignUpForm = () => {
 
     try {
       const data = await registerUser(email, password, nickname);
-      console.log(data);
-      // 회원가입 성공 처리 로직...
+      navigate("/login");
     } catch (error) {
       if (error instanceof AxiosError) {
         setErrorMessage(error.response?.data.message || "An error occurred");
